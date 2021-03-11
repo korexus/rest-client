@@ -7,7 +7,10 @@ const glob = require('glob');
 const { CLIEngine } = require('eslint');
 const { assert } = require('chai');
 
-const paths = glob.sync('!(node_modules)/**/*.js');
+const paths = [
+  ...glob.sync('*.js'),
+  ...glob.sync('!(node_modules)/**/*.js'),
+];
 const engine = new CLIEngine({
   envs: ['node', 'mocha'],
   useEslintrc: true,
