@@ -1,10 +1,10 @@
 {
   "name": "@korexus/rest-client",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "A simple javascript REST client, used in several projects.",
   "main": "index.js",
   "scripts": {
-    "test:eslint": "eslint --env node,mocha --ext .js .",
+    "test:eslint": "DEBUG=eslint:cli-engine eslint .",
     "test:unit": "mocha ./**/*.test.js --recursive",
     "test": "npm run test:eslint && npm run test:unit"
   },
