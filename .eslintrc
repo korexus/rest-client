@@ -36,7 +36,8 @@
         "ignoreTemplateLiterals": true,
         "ignoreComments": true
     }],
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "semi": "error"
   },
   "globals": {
     "expect": true

@@ -1,6 +1,6 @@
 {
   "name": "@korexus/rest-client",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "A simple javascript REST client, used in several projects.",
   "main": "index.js",
   "scripts": {
