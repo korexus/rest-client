@@ -7,6 +7,7 @@
   "plugins": [
     "chai-friendly"
   ],
+  "ignorePatterns": ["dist", "node_modules"],
   "rules": {
     "max-depth": ["error", 3],
     "import/no-mutable-exports": 0,
