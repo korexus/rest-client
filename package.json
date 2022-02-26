@@ -1,9 +1,11 @@
 {
   "name": "@korexus/rest-client",
-  "version": "0.4.9",
+  "version": "0.5.0",
   "description": "A simple javascript REST client, used in several projects.",
-  "main": "index.js",
+  "main": "dist/restClient.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "prepiblish": "tsc",
     "test:eslint": "DEBUG=eslint:cli-engine eslint .",
     "test:unit": "mocha ./**/*.test.js --recursive",
     "test": "npm run test:eslint && npm run test:unit"
@@ -12,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/korexus/rest-client.git"
   },
-  "author": "",
+  "author": "korexus",
   "bugs": {
     "url": "https://github.com/korexus/rest-client/issues"
   },
