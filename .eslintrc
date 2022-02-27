@@ -3,6 +3,13 @@
     "node": true,
     "mocha": true
   },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts"]
+      }
+    }
+  },
   "extends": ["airbnb-base", "prettier"],
   "plugins": [
     "chai-friendly"
