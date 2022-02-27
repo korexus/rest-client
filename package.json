@@ -5,7 +5,7 @@
   "main": "dist/restClient.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepiblish": "tsc",
+    "prepublish": "tsc",
     "test:eslint": "DEBUG=eslint:cli-engine eslint .",
     "test:unit": "mocha ./**/*.test.js --recursive",
     "test": "npm run test:eslint && npm run test:unit"
