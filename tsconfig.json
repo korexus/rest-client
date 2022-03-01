@@ -3,6 +3,9 @@
     "declaration": true,
     "outDir": "./dist",
     "allowJs": true,
+    "lib": ["es2020"],
+    "module": "es2020",
+    "moduleResolution": "node",
     "target": "es6"
   },
   "include": ["./lib/**/*"]

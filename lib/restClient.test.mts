@@ -1,9 +1,9 @@
 /* eslint max-classes-per-file: 0 */
 /* eslint lines-between-class-members: 0 */
-const chai = require("chai");
-const chaiAsPromised = require("chai-as-promised");
-const fetch = require('node-fetch');
-const { RestClient } = require('./restClient');
+import chai from "chai";
+import chaiAsPromised from "chai-as-promised";
+import fetch from 'node-fetch';
+import { RestClient } from './restClient.js';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -29,6 +29,7 @@ describe('Rest Client', () => {
         test: ['/tests', 'GET'],
       };
       const testClient = new RestClient(baseURL, endpoints);
+      // @ts-ignore  testClient.test is built dynamically
       expect(typeof testClient.test).to.equal("function");
     });
 
@@ -276,7 +277,7 @@ describe('Rest Client', () => {
   describe('_processResponse', () => {
     const testClient = new RestClient('https://example.com', {});
 
-    function generateResponse(statusCode, content) {
+    function generateResponse(statusCode: number, content?: object) {
       return new fetch.Response(JSON.stringify(content), {
         status: statusCode,
         headers: { 'Content-Type': 'application/json' },
