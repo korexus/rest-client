@@ -1,23 +1,61 @@
-const { ClientError, ServerError } = require('./errors');
-const { isObject, objectMap } = require('./objectHelpers');
+import { ClientError, ServerError } from './errors.js';
+import { isObject, objectMap } from './objectHelpers.js';
 
 
 let _fetch;
 if (typeof(fetch) === "undefined") {
-  // eslint-disable-next-line global-require
-  _fetch = require('node-fetch');
+  import('node-fetch').then(m => _fetch = m);
 } else {
   // eslint-disable-next-line no-undef
   _fetch = fetch;
 }
+
+type endpointName = string;
+type endpointPath = string;
+type HTTPMethod = 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
+type HTTPStatusCode = number;
+type transform = string;
+type errorHandler = string;
+
+type endpointDefinition = [
+  endpointPath,
+  HTTPMethod,
+  Array<transform>?,
+  Record<HTTPStatusCode, errorHandler>?,
+]
+export type endpoints = Record<endpointName, endpointDefinition>;
+
+type callArgs = Record<string, any>;
+type auth = Record<string, string>;
+
+type requestOptions = {
+  method: HTTPMethod,
+  mode: "cors",
+  headers: {
+    "content-type": "application/json",
+    authorization?: string,
+  },
+  body?: string,
+}
+
+type request = {
+  url: string,
+  options: requestOptions,
+}
+
 class RestClient {
-  constructor(baseURL, endpoints) {
+  _baseURL: string;
+  _endpoints: endpoints;
+  static ClientError: typeof ClientError;
+  static ServerError: typeof ServerError;
+
+  constructor(baseURL: string, endpoints: endpoints) {
     this._baseURL = baseURL;
     this._validateEndpoints(endpoints);
     this._setEndpoints(endpoints);
   }
 
-  _validateEndpoints(endpoints) {
+  _validateEndpoints(endpoints: endpoints) {
     Object.entries(endpoints).forEach(([endpoint, definition]) => {
       if (endpoint.match(/[^a-zA-Z0-9]/)) {
         throw new Error(`Invalid endpoint name ${endpoint}`);
@@ -84,7 +122,7 @@ class RestClient {
     return { resolvedPath, remainingArgs };
   }
 
-  _determineURL(method, path, args) {
+  _determineURL(method: HTTPMethod, path: endpointPath, args: callArgs): string {
     // It would be more elegant to do new URL()
     // but that doesn't work in nativescript where this library is being used.
     let url = `${this._baseURL}${path}`;
@@ -97,8 +135,8 @@ class RestClient {
     return url;
   }
 
-  _buildRequestOptions(method, args, auth) {
-    const options = {
+  _buildRequestOptions(method: HTTPMethod, args: callArgs, auth: auth): requestOptions {
+    const options: requestOptions = {
       method,
       mode: "cors",
       headers: {
@@ -114,7 +152,7 @@ class RestClient {
     return options;
   }
 
-  _buildRequest(endpoint, args, auth) {
+  _buildRequest(endpoint: endpointName, args: callArgs, auth: auth): request {
     const { path, method } = this._endpointDetails(endpoint);
     const { resolvedPath, remainingArgs } = this._buildParameters(path, args);
     const url = this._determineURL(method, resolvedPath, remainingArgs);
@@ -149,10 +187,6 @@ class RestClient {
   }
 }
 
-// It seems es-lint can't understand these being defined in the class.
 RestClient.ClientError = ClientError;
 RestClient.ServerError = ServerError;
-
-module.exports = {
-  RestClient,
-};
+export { RestClient };

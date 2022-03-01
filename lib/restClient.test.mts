@@ -3,7 +3,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import fetch from 'node-fetch';
-import { RestClient } from './restClient.js';
+import { RestClient, endpoints as endpointsType } from './restClient.mjs';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -20,14 +20,14 @@ describe('Rest Client', () => {
     it('should allow a client with endpoints definition', () => {
       const endpoints = {
         test: ['/tests', 'GET'],
-      };
+      } as endpointsType;
       expect(() => new RestClient(baseURL, endpoints)).not.to.throw();
     });
 
     it('should create functions for defined endpoints', () => {
       const endpoints = {
         test: ['/tests', 'GET'],
-      };
+      } as endpointsType;
       const testClient = new RestClient(baseURL, endpoints);
       // @ts-ignore  testClient.test is built dynamically
       expect(typeof testClient.test).to.equal("function");
@@ -36,50 +36,50 @@ describe('Rest Client', () => {
     describe('endpoint validation', () => {
       it('should accept a valid endpoint definition', () => {
         const endpoints = {
-          test: ['/tests', 'GET', [() => {}], { 400: () => {} }],
-        };
+          test: ['/tests', 'GET', ['transformFunc'], { 400: 'errorFunc' }],
+        } as endpointsType;
         expect(() => new RestClient(baseURL, endpoints)).not.to.throw();  
       });  
 
       it('should not allow a client with private endpoints', () => {
         const endpoints = {
           _test: ['/tests', 'GET'],
-        };
+        } as endpointsType;
         expect(() => new RestClient(baseURL, endpoints)).to.throw();
       });
     
       it('should not allow a client with hard to invoke endpoints', () => {
         const endpoints = {
           'two words': ['/tests', 'GET'],
-        };
+        } as endpointsType;
         expect(() => new RestClient(baseURL, endpoints)).to.throw();
       });
 
       it('should not allow an unrecognised http method', () => {
         const endpoints = {
           test: ['/tests', 'CHECK'],
-        };
+        } as unknown as endpointsType;
         expect(() => new RestClient(baseURL, endpoints)).to.throw();  
       });
 
       it('should require transforms to be a list if they are provided', () => {
         const endpoints = {
-          test: ['/tests', 'GET', () => {}],
-        };
+          test: ['/tests', 'GET', 'transformFunc'],
+        } as unknown as endpointsType;
         expect(() => new RestClient(baseURL, endpoints)).to.throw();  
       });
 
       it('should require error handlers to be an object if they are provided', () => {
         const endpoints = {
           test: ['/tests', 'GET', [], []],
-        };
+        } as endpointsType;
         expect(() => new RestClient(baseURL, endpoints)).to.throw();  
       });
 
       it('should require error handler keys to http status codes', () => {
         const endpoints = {
-          test: ['/tests', 'GET', [], { 1000: () => {} }],
-        };
+          test: ['/tests', 'GET', [], { 1000: 'errorFunc' }],
+        } as endpointsType;
         expect(() => new RestClient(baseURL, endpoints)).to.throw();  
       });
     });
@@ -89,7 +89,7 @@ describe('Rest Client', () => {
     it('should retrieve path and method for an endpoint', () => {
       const endpoints = {
         test: ['/tests', 'GET'],
-      };
+      } as endpointsType;
       const testClient = new RestClient(baseURL, endpoints);
       const { path, method } = testClient._endpointDetails('test');
       expect(path).to.equal('/tests');
@@ -101,7 +101,7 @@ describe('Rest Client', () => {
         testsList: ['/tests', 'GET'],
         testCreate: ['/tests', 'POST'],
         testsRemove: ['/tests', 'DELETE'],
-      };
+      } as endpointsType;
       const testClient = new RestClient(baseURL, endpoints);
       const { path, method } = testClient._endpointDetails('testCreate');
       expect(path).to.equal('/tests');
@@ -111,7 +111,7 @@ describe('Rest Client', () => {
     it('should maintain path parameters', () => {
       const endpoints = {
         testInfo: ['/tests/:testId', 'GET'],
-      };
+      } as endpointsType;
       const testClient = new RestClient(baseURL, endpoints);
       const { path, method } = testClient._endpointDetails('testInfo');
       expect(path).to.equal('/tests/:testId');
@@ -122,7 +122,9 @@ describe('Rest Client', () => {
       class TestClient extends RestClient {
         _ignoreResult() { };
       };
-      const endpoints = { test: ['/tests', 'GET', ['_ignoreResult']] };
+      const endpoints = {
+        test: ['/tests', 'GET', ['_ignoreResult']]
+      } as endpointsType;
 
       const testClient = new TestClient(baseURL, endpoints);
       const { transforms } = testClient._endpointDetails('test');
@@ -134,7 +136,9 @@ describe('Rest Client', () => {
         _transformOne() { };
         _transformTwo() { };
       };
-      const endpoints = { test: ['/tests', 'GET', ['_transformOne', '_transformTwo']] };
+      const endpoints = {
+        test: ['/tests', 'GET', ['_transformOne', '_transformTwo']]
+      } as endpointsType;
 
       const testClient = new TestClient(baseURL, endpoints);
       const { transforms } = testClient._endpointDetails('test');
@@ -148,7 +152,9 @@ describe('Rest Client', () => {
       class TestClient extends RestClient {
         _ignoreResult() { };
       };
-      const endpoints = { test: ['/tests', 'GET', [], { 404: '_ignoreResult' }] };
+      const endpoints = {
+        test: ['/tests', 'GET', [], { 404: '_ignoreResult' }]
+      } as endpointsType;
 
       const testClient = new TestClient(baseURL, endpoints);
       const { handlers } = testClient._endpointDetails('test');
