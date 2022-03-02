@@ -1,5 +1,5 @@
-const { expect } = require("chai");
-const { isObject, objectMap } = require('./objectHelpers');
+import { expect } from 'chai';
+import { isObject, objectMap } from './objectHelpers.js';
 
 describe('isObject', () => {
   it('should return true for an object', () => {
