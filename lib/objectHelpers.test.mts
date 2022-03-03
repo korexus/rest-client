@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { isObject, objectMap } from './objectHelpers.js';
+import { isObject, objectMap } from './objectHelpers.mjs';
 
 describe('isObject', () => {
   it('should return true for an object', () => {

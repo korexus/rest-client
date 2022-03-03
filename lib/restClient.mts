@@ -1,5 +1,5 @@
 import { ClientError, ServerError } from './errors.js';
-import { isObject, objectMap } from './objectHelpers.js';
+import { isObject, objectMap } from './objectHelpers.mjs';
 
 
 let _fetch;
