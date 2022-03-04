@@ -1,4 +1,4 @@
-import { ClientError, ServerError } from './errors.js';
+import { ClientError, ServerError } from './errors.mjs';
 import { isObject, objectMap } from './objectHelpers.mjs';
 
 

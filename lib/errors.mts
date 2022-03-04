@@ -45,8 +45,12 @@ const statusCodes = {
   511: "Network Authentication Required",
 };
 
+export type HTTPStatusCode = keyof typeof statusCodes;
+
 class HTTPError extends Error {
-  constructor(statusCode) {
+  statusCode: HTTPStatusCode
+
+  constructor(statusCode: HTTPStatusCode) {
     const statusCodeString = statusCode.toString();
     const message = statusCodes[statusCodeString];
     super(message);
@@ -54,11 +58,6 @@ class HTTPError extends Error {
   }
 }
 
-class ClientError extends HTTPError {}
+export class ClientError extends HTTPError {}
 
-class ServerError extends HTTPError {}
-
-module.exports = {
-  ClientError,
-  ServerError,
-};
+export class ServerError extends HTTPError {}
