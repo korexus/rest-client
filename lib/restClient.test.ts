@@ -3,7 +3,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import fetch from 'node-fetch';
-import { RestClient, endpoints as endpointsType } from './restClient.mjs';
+import { RestClient, endpoints as endpointsType } from './restClient.js';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
