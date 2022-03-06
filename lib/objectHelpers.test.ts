@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { expect } from 'chai';
-import { isObject, objectMap } from './objectHelpers.js';
+import { isObject, objectMap } from './objectHelpers';
 
 describe('isObject', () => {
   it('should return true for an object', () => {

@@ -1,10 +1,10 @@
-import { ClientError, ServerError } from './errors.js';
-import { isObject, objectMap } from './objectHelpers.js';
+import { ClientError, ServerError } from './errors';
+import { isObject, objectMap } from './objectHelpers';
 
 
 let _fetch;
 if (typeof(fetch) === "undefined") {
-  import('node-fetch').then(m => _fetch = m);
+  import('node-fetch').then(m => { _fetch = m; });
 } else {
   // eslint-disable-next-line no-undef
   _fetch = fetch;
@@ -23,10 +23,10 @@ type endpointDefinition = [
   Array<transform>?,
   Record<HTTPStatusCode, errorHandler>?,
 ]
-export type endpoints = Record<endpointName, endpointDefinition>;
+export type clientEndpoints = Record<endpointName, endpointDefinition>;
 
 type callArgs = Record<string, any>;
-type auth = Record<string, string>;
+type callAuth = Record<string, string>;
 
 type requestOptions = {
   method: HTTPMethod,
@@ -45,17 +45,20 @@ type request = {
 
 class RestClient {
   _baseURL: string;
-  _endpoints: endpoints;
+
+  _endpoints: clientEndpoints;
+
   static ClientError: typeof ClientError;
+
   static ServerError: typeof ServerError;
 
-  constructor(baseURL: string, endpoints: endpoints) {
+  constructor(baseURL: string, endpoints: clientEndpoints) {
     this._baseURL = baseURL;
     this._validateEndpoints(endpoints);
     this._setEndpoints(endpoints);
   }
 
-  _validateEndpoints(endpoints: endpoints) {
+  _validateEndpoints(endpoints: clientEndpoints) {
     Object.entries(endpoints).forEach(([endpoint, definition]) => {
       if (endpoint.match(/[^a-zA-Z0-9]/)) {
         throw new Error(`Invalid endpoint name ${endpoint}`);
@@ -90,11 +93,10 @@ class RestClient {
   }
 
   _setEndpoints(endpoints) {
-    const self = this;
     this._endpoints = endpoints;
     Object.keys(this._endpoints).forEach(endpoint => {
-      self[endpoint] = async ({ args, context, auth }) => (
-        self.call({ endpoint, args, context, auth })
+      this[endpoint] = async ({ args, context, auth }) => (
+        this.call({ endpoint, args, context, auth })
       );
     });
   }
@@ -135,7 +137,7 @@ class RestClient {
     return url;
   }
 
-  _buildRequestOptions(method: HTTPMethod, args: callArgs, auth: auth): requestOptions {
+  _buildRequestOptions(method: HTTPMethod, args: callArgs, auth: callAuth): requestOptions {
     const options: requestOptions = {
       method,
       mode: "cors",
@@ -152,7 +154,7 @@ class RestClient {
     return options;
   }
 
-  _buildRequest(endpoint: endpointName, args: callArgs, auth: auth): request {
+  _buildRequest(endpoint: endpointName, args: callArgs, auth: callAuth): request {
     const { path, method } = this._endpointDetails(endpoint);
     const { resolvedPath, remainingArgs } = this._buildParameters(path, args);
     const url = this._determineURL(method, resolvedPath, remainingArgs);

@@ -48,7 +48,7 @@ const statusCodes = {
 export type HTTPStatusCode = keyof typeof statusCodes;
 
 class HTTPError extends Error {
-  statusCode: HTTPStatusCode
+  statusCode: HTTPStatusCode;
 
   constructor(statusCode: HTTPStatusCode) {
     const statusCodeString = statusCode.toString();

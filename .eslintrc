@@ -1,26 +1,44 @@
 {
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "chai-friendly",
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "airbnb-base",
+    "prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
+  ],
   "env": {
     "node": true,
     "mocha": true
   },
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [".js", ".ts"]
+  "parserOptions": {
+    "ecmaVersion": 9
+  },
+  "globals": {
+    "expect": true
+  },
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "rules": {
+        "no-useless-constructor": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-useless-constructor": ["error"]
       }
     }
-  },
-  "extends": ["airbnb-base", "prettier"],
-  "plugins": [
-    "chai-friendly"
   ],
-  "ignorePatterns": ["dist", "node_modules"],
   "rules": {
     "max-depth": ["error", 3],
     "import/no-mutable-exports": 0,
     "import/extensions": 0,
     "import/no-extraneous-dependencies": ["error", {
-      "devDependencies": ["./**/*.test*.js"]
+      "devDependencies": ["**/*.test.ts"]
     }],
     "no-case-declarations": 0,
     "no-console": 0,
@@ -46,8 +64,5 @@
     }],
     "class-methods-use-this": "off",
     "semi": "error"
-  },
-  "globals": {
-    "expect": true
   }
 }

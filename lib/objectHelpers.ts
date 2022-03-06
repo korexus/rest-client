@@ -6,7 +6,7 @@ export function isObject(value: unknown): value is object {
   );
 }
 
-export function objectMap(object: object, method: Function): object {
+export function objectMap(object: object, method: ([string, any]) => any): object {
   return Object.fromEntries(
     Object.entries(object).map(([key, value]) => method([key, value]))
   );

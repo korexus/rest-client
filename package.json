@@ -1,12 +1,12 @@
 {
   "name": "@korexus/rest-client",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "A simple javascript REST client, used in several projects.",
   "main": "dist/restClient.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "tsc",
-    "test:eslint": "DEBUG=eslint:cli-engine eslint .",
+    "prepublish": "tsc && npm test",
+    "test:eslint": "DEBUG=eslint:cli-engine eslint lib",
     "test:unit": "mocha ./**/*.test.*js --recursive",
     "test": "npm run test:eslint && npm run test:unit"
   },
@@ -24,6 +24,8 @@
   },
   "devDependencies": {
     "@types/mocha": "^9.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.4.1",
