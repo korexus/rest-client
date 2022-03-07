@@ -10,19 +10,31 @@ if (typeof(fetch) === "undefined") {
   _fetch = fetch;
 }
 
-type endpointName = string;
+type endpointNamePrefix = 'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'i'|'j'|'k'|'l'|'m'|'n'|'o'|'p'|'q'|'r'|'s'|'t'|'u'|'v'|'w'|'x'|'y'|'z';
+type endpointName = `${endpointNamePrefix}${string}`;
 type endpointPath = string;
 type HTTPMethod = 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
 type HTTPStatusCode = number;
-type transform = string;
-type errorHandler = string;
+type transformName = string;
+type errorHandlerName = string;
+type handlerFunction = (response, callContext) => any;
+type responseTransformFunctions = Array<handlerFunction>;
+type errorHandlerFunctions = Record<HTTPStatusCode, handlerFunction>;
 
 type endpointDefinition = [
   endpointPath,
   HTTPMethod,
-  Array<transform>?,
-  Record<HTTPStatusCode, errorHandler>?,
+  Array<transformName>?,
+  Record<HTTPStatusCode, errorHandlerName>?,
 ]
+type endpointDetails = {
+  path: endpointPath,
+  method: HTTPMethod,
+  transforms: responseTransformFunctions,
+  handlers: errorHandlerFunctions
+};
+
+
 export type clientEndpoints = Record<endpointName, endpointDefinition>;
 
 type callArgs = Record<string, any>;
@@ -43,7 +55,12 @@ type request = {
   options: requestOptions,
 }
 
+type callResponse = any;
+type callContext = Record<string, any>
+
 class RestClient {
+  [index: endpointName]: handlerFunction;
+
   _baseURL: string;
 
   _endpoints: clientEndpoints;
@@ -101,10 +118,10 @@ class RestClient {
     });
   }
 
-  _endpointDetails(endpoint) {
+  _endpointDetails(endpoint: endpointName): endpointDetails {
     const [path, method, transformFunctions, handlerFunctions] = this._endpoints[endpoint];
     const transforms = (transformFunctions || []).map(t => this[t]);
-    const handlers = objectMap(handlerFunctions || {}, ([k, v]) => [k, this[v]]);
+    const handlers = objectMap(handlerFunctions || {}, ([k, v]) => [k, this[v]]) as errorHandlerFunctions;
     return { path, method, transforms, handlers };
   }
 
@@ -162,7 +179,12 @@ class RestClient {
     return { url, options };
   }
 
-  async _processResponse(response, transforms=[], handlers={}, context={}) {
+  async _processResponse(
+    response: callResponse,
+    transforms: Array<handlerFunction>=[],
+    handlers: Record<HTTPStatusCode, handlerFunction>={},
+    context: callContext={},
+  ) {
     let result;
     if (response.status !== 204) { // no content
       result = await response.json();

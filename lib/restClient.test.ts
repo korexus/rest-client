@@ -30,8 +30,6 @@ describe('Rest Client', () => {
         test: ['/tests', 'GET'],
       } as clientEndpoints;
       const testClient = new RestClient(baseURL, endpoints);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore  testClient.test is built dynamically
       expect(typeof testClient.test).to.equal("function");
     });
 
