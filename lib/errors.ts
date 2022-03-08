@@ -1,4 +1,4 @@
- /* eslint-disable max-classes-per-file */
+/* eslint-disable max-classes-per-file */
 
 const statusCodes = {
   // Client Errors
@@ -45,14 +45,14 @@ const statusCodes = {
   511: "Network Authentication Required",
 };
 
+
 export type HTTPStatusCode = keyof typeof statusCodes;
 
 class HTTPError extends Error {
   statusCode: HTTPStatusCode;
 
   constructor(statusCode: HTTPStatusCode) {
-    const statusCodeString = statusCode.toString();
-    const message = statusCodes[statusCodeString];
+    const message = statusCodes[statusCode];
     super(message);
     this.statusCode = statusCode;
   }
