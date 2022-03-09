@@ -4,7 +4,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import fetch from 'node-fetch';
-import { RestClient, clientEndpoints } from './restClient';
+import { RestClient, clientEndpoints, responseTransformFunctions } from './restClient';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -293,7 +293,7 @@ describe('Rest Client', () => {
     describe('Successes', () => {
       it('should return undefined for a no content response', async () => {
         const response = generateResponse(204);
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = await testClient._processResponse(
           response,
           transforms,
@@ -303,7 +303,7 @@ describe('Rest Client', () => {
 
       it('should return the JSON from a success response', async () => {
         const response = generateResponse(200, { key: "value" });
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = await testClient._processResponse(
           response,
           transforms,
@@ -362,84 +362,84 @@ describe('Rest Client', () => {
 
       it('should throw a Bad Request error if there is a 400 response', async () => {
         const response = generateResponse(400, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ClientError, "Bad Request");
       });
 
       it('should throw a Unauthorised error if there is a 401 response', async () => {
         const response = generateResponse(401, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ClientError, "Unauthorised");
       });
 
       it('should throw a Forbidden error if there is a 403 response', async () => {
         const response = generateResponse(403, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ClientError, "Forbidden");
       });
 
       it('should throw a Not Found error if there is a 404 response', async () => {
         const response = generateResponse(404, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ClientError, "Not Found");
       });
 
       it('should throw a Method Not Allowed error if there is a 405 response', async () => {
         const response = generateResponse(405, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ClientError, "Method Not Allowed");
       });
 
       it('should throw a Conflict error if there is a 409 response', async () => {
         const response = generateResponse(409, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ClientError, "Conflict");
       });
 
       it('should throw a Payload Too Large error if there is a 413 response', async () => {
         const response = generateResponse(413, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ClientError, "Payload Too Large");
       });
 
       it('should throw a Too Many Requests error if there is a 429 response', async () => {
         const response = generateResponse(429, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ClientError, "Too Many Requests");
       });
 
       it('should throw an Internal Server Error if there is a 500 response', async () => {
         const response = generateResponse(500, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ServerError, "Internal Server Error");
       });
 
       it('should throw a Bad Gateway error if there is a 502 response', async () => {
         const response = generateResponse(502, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ServerError, "Bad Gateway");
       });
 
       it('should throw a Service Unavailable error if there is a 503 response', async () => {
         const response = generateResponse(503, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ServerError, "Service Unavailable");
       });
 
       it('should throw a Gateway Timeout error if there is a 504 response', async () => {
         const response = generateResponse(504, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const result = testClient._processResponse(response, transforms);
         await expect(result).to.be.rejectedWith(ServerError, "Gateway Timeout");
       });
@@ -448,7 +448,7 @@ describe('Rest Client', () => {
     describe('Custom Error Handlers', () => {
       it('should use the defined handler for an error', async () => {
         const response = generateResponse(400, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const handlers = { 400: () => ({ success: false, errorCode: 400 })};
         const result = await testClient._processResponse(response, transforms, handlers);
         expect(result).to.deep.equal({ success: false, errorCode: 400 });
@@ -456,7 +456,7 @@ describe('Rest Client', () => {
 
       it('should not use the handler defined for a different error', async () => {
         const response = generateResponse(401, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const handlers = { 400: () => ({ success: false, errorCode: 400 })};
         const result = testClient._processResponse(response, transforms, handlers);
         await expect(result).to.be.rejectedWith(RestClient.ClientError, "Unauthorised");
@@ -464,7 +464,7 @@ describe('Rest Client', () => {
 
       it('should pass the response body to the error handler', async() => {
         const response = generateResponse(404, { message: "This is an expected result" });
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const handlers = { 404: (responseBody) => responseBody.message };
         const result = await testClient._processResponse(response, transforms, handlers);
         expect(result).to.deep.equal("This is an expected result");
@@ -472,7 +472,7 @@ describe('Rest Client', () => {
 
       it('should pass the response body to the error handler', async() => {
         const response = generateResponse(404, {});
-        const transforms = [];
+        const transforms: responseTransformFunctions = [];
         const handlers = { 404: (responseBody, context) => context.caller };
         const context = { caller: "Some user" };
         const result = await testClient._processResponse(response, transforms, handlers, context);

@@ -18,7 +18,7 @@ type HTTPStatusCode = number;
 type transformName = string;
 type errorHandlerName = string;
 type handlerFunction = (response, callContext) => any;
-type responseTransformFunctions = Array<handlerFunction>;
+export type responseTransformFunctions = Array<handlerFunction>;
 type errorHandlerFunctions = Record<HTTPStatusCode, handlerFunction>;
 
 type endpointDefinition = [
