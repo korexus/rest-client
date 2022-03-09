@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-import fetch from 'node-fetch';
+import { Response as FetchResponse } from 'node-fetch';
 import { RestClient, clientEndpoints, responseTransformFunctions } from './restClient';
 
 chai.use(chaiAsPromised);
@@ -284,7 +284,7 @@ describe('Rest Client', () => {
     const testClient = new RestClient('https://example.com', {});
 
     function generateResponse(statusCode: number, content?: object) {
-      return new fetch.Response(JSON.stringify(content), {
+      return new FetchResponse(JSON.stringify(content), {
         status: statusCode,
         headers: { 'Content-Type': 'application/json' },
       });

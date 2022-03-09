@@ -125,7 +125,7 @@ class RestClient {
     return { path, method, transforms, handlers };
   }
 
-  _buildParameters(pathTemplate, args) {
+  _buildParameters(pathTemplate: endpointPath, args: callArgs) {
     let resolvedPath = pathTemplate;
     const remainingArgs = { ...args };
     const parameters = pathTemplate.match(/:[^/]+/g) || [];
