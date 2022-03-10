@@ -34,7 +34,6 @@ type endpointDetails = {
   handlers: errorHandlerFunctions
 };
 
-
 export type clientEndpoints = Record<endpointName, endpointDefinition>;
 
 type callArgs = Record<string, any>;
@@ -57,6 +56,14 @@ type request = {
 
 type callResponse = any;
 type callContext = Record<string, any>
+
+export type apiRequest = {
+  endpoint: endpointName,
+  args: callArgs,
+  context: callContext,
+  auth: callAuth,
+};
+
 
 class RestClient {
   [index: endpointName]: handlerFunction;
@@ -109,9 +116,9 @@ class RestClient {
     });
   }
 
-  _setEndpoints(endpoints) {
+  _setEndpoints(endpoints: clientEndpoints) {
     this._endpoints = endpoints;
-    Object.keys(this._endpoints).forEach(endpoint => {
+    Object.keys(this._endpoints).forEach((endpoint: endpointName) => {
       this[endpoint] = async ({ args, context, auth }) => (
         this.call({ endpoint, args, context, auth })
       );
@@ -202,7 +209,7 @@ class RestClient {
     return transforms.reduce((res, t) => t(res, context), result);
   }
 
-  async call({ endpoint, args, context, auth = {} }) {
+  async call({ endpoint, args, context, auth = {} }: apiRequest) {
     const { url, options } = this._buildRequest(endpoint, args, auth);
     const response = await _fetch(url, options);
     const { transforms, handlers } = this._endpointDetails(endpoint);
