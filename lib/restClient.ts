@@ -118,7 +118,8 @@ class RestClient {
 
   _setEndpoints(endpoints: clientEndpoints) {
     this._endpoints = endpoints;
-    Object.keys(this._endpoints).forEach((endpoint: endpointName) => {
+    Object.keys(this._endpoints).forEach(e => {
+      const endpoint = e as endpointName;
       this[endpoint] = async ({ args, context, auth }) => (
         this.call({ endpoint, args, context, auth })
       );
