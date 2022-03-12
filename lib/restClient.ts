@@ -1,12 +1,11 @@
+import type nodeFetch from 'node-fetch';
+import type { Response } from 'node-fetch';
 import { ClientError, ServerError } from './errors';
 import { isObject, objectMap } from './objectHelpers';
 
-import type { Response } from 'node-fetch';
-
-
-let _fetch;
+let _fetch: typeof nodeFetch | typeof fetch;
 if (typeof(fetch) === "undefined") {
-  import('node-fetch').then(m => { _fetch = m; });
+  import('node-fetch').then(m => { _fetch = m as unknown as typeof nodeFetch; });
 } else {
   // eslint-disable-next-line no-undef
   _fetch = fetch;
