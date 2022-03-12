@@ -79,7 +79,8 @@ class RestClient {
   constructor(baseURL: string, endpoints: clientEndpoints) {
     this._baseURL = baseURL;
     this._validateEndpoints(endpoints);
-    this._setEndpoints(endpoints);
+    this._endpoints = endpoints;
+    this._makeEndpointFunctions();
   }
 
   _validateEndpoints(endpoints: clientEndpoints) {
@@ -116,8 +117,7 @@ class RestClient {
     });
   }
 
-  _setEndpoints(endpoints: clientEndpoints) {
-    this._endpoints = endpoints;
+  _makeEndpointFunctions() {
     Object.keys(this._endpoints).forEach(e => {
       const endpoint = e as endpointName;
       this[endpoint] = async ({ args, context, auth }) => (
