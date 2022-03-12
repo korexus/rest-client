@@ -1,6 +1,8 @@
 import { ClientError, ServerError } from './errors';
 import { isObject, objectMap } from './objectHelpers';
 
+import type { Response } from 'node-fetch';
+
 
 let _fetch;
 if (typeof(fetch) === "undefined") {
@@ -15,9 +17,12 @@ type endpointName = `${endpointNamePrefix}${string}`;
 type endpointPath = string;
 type HTTPMethod = 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
 type HTTPStatusCode = number;
-type transformName = string;
-type errorHandlerName = string;
-type handlerFunction = (response, callContext) => any;
+type privatePropertyName = `_${string}`;
+type transformName = privatePropertyName;
+type errorHandlerName = privatePropertyName;
+type callContext = Record<string, any>
+
+type handlerFunction = (arg1: Response, arg2?: callContext) => any;
 export type responseTransformFunctions = Array<handlerFunction>;
 type errorHandlerFunctions = Record<HTTPStatusCode, handlerFunction>;
 
@@ -54,19 +59,27 @@ type request = {
   options: requestOptions,
 }
 
-type callResponse = any;
-type callContext = Record<string, any>
+export type callResponse = any;
 
-export type apiRequest = {
+export type genericApiRequest = {
   endpoint: endpointName,
   args: callArgs,
   context: callContext,
   auth: callAuth,
 };
 
+export type apiRequest = {
+  args: callArgs,
+  context: callContext,
+  auth: callAuth,
+};
+export type callFunction = (call: apiRequest) => any;
+
 
 class RestClient {
-  [index: endpointName]: handlerFunction;
+  [index: endpointName]: callFunction | ((call: genericApiRequest) => any);
+
+  [index: privatePropertyName]: any;
 
   _baseURL: string;
 
@@ -120,7 +133,7 @@ class RestClient {
   _makeEndpointFunctions() {
     Object.keys(this._endpoints).forEach(e => {
       const endpoint = e as endpointName;
-      this[endpoint] = async ({ args, context, auth }) => (
+      this[endpoint] = async ({ args, context, auth }: apiRequest) => (
         this.call({ endpoint, args, context, auth })
       );
     });
@@ -210,7 +223,7 @@ class RestClient {
     return transforms.reduce((res, t) => t(res, context), result);
   }
 
-  async call({ endpoint, args, context, auth = {} }: apiRequest) {
+  async call({ endpoint, args, context, auth = {} }: genericApiRequest) {
     const { url, options } = this._buildRequest(endpoint, args, auth);
     const response = await _fetch(url, options);
     const { transforms, handlers } = this._endpointDetails(endpoint);

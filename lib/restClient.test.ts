@@ -4,7 +4,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { Response as FetchResponse } from 'node-fetch';
-import { RestClient, clientEndpoints, responseTransformFunctions } from './restClient';
+import { RestClient, clientEndpoints, responseTransformFunctions, callResponse } from './restClient';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -36,7 +36,7 @@ describe('Rest Client', () => {
     describe('endpoint validation', () => {
       it('should accept a valid endpoint definition', () => {
         const endpoints = {
-          test: ['/tests', 'GET', ['transformFunc'], { 400: 'errorFunc' }],
+          test: ['/tests', 'GET', ['_transformFunc'], { 400: '_errorFunc' }],
         } as clientEndpoints;
         expect(() => new RestClient(baseURL, endpoints)).not.to.throw();  
       });  
@@ -78,7 +78,7 @@ describe('Rest Client', () => {
 
       it('should require error handler keys to http status codes', () => {
         const endpoints = {
-          test: ['/tests', 'GET', [], { 1000: 'errorFunc' }],
+          test: ['/tests', 'GET', [], { 1000: '_errorFunc' }],
         } as clientEndpoints;
         expect(() => new RestClient(baseURL, endpoints)).to.throw();  
       });
@@ -325,8 +325,8 @@ describe('Rest Client', () => {
       it('should apply all transforms in order', async () => {
         const response = generateResponse(200, { value: 1 });
         const transforms = [
-          ({ value }) => ({ value: value + 2 }),
-          ({ value }) => ({ value: value * 3 }),
+          ({ value }: callResponse ) => ({ value: value + 2 }),
+          ({ value }: callResponse) => ({ value: value * 3 }),
         ];
         const result = await testClient._processResponse(
           response,
