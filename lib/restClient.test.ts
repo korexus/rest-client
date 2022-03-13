@@ -243,39 +243,39 @@ describe('Rest Client', () => {
     const testClient = new RestClient('https://example.com', {});
 
     it('should return basic options', () => {
-      const { mode, headers } = testClient._buildRequestOptions('GET', null, null);
+      const { mode, headers } = testClient._buildRequestOptions('GET', undefined, undefined);
       expect(mode).to.equal("cors");
       expect(headers).to.deep.equal({ "content-type": "application/json" });
     });
 
     it('should return a GET method for GET requests', () => {
-      const { method } = testClient._buildRequestOptions('GET', null, null);
+      const { method } = testClient._buildRequestOptions('GET', undefined, undefined);
       expect(method).to.equal("GET");
     });
 
     it('should return a POST method for POST requests', () => {
-      const { method } = testClient._buildRequestOptions('POST', null, null);
+      const { method } = testClient._buildRequestOptions('POST', undefined, undefined);
       expect(method).to.equal("POST");
     });
 
     it('should specify a JSON body for POST requests with arguments', () => {
-      const { body } = testClient._buildRequestOptions('POST', { a: 1 }, null);
+      const { body } = testClient._buildRequestOptions('POST', { a: 1 }, undefined);
       expect(body).to.deep.equal('{"a":1}');
     });
     
     it('should not specify a JSON body for POST requests without arguments', () => {
-      const { body } = testClient._buildRequestOptions('POST', null, null);
+      const { body } = testClient._buildRequestOptions('POST', undefined, undefined);
       expect(body).to.equal(undefined);
     });
 
     it('should not specify a JSON body for GET requests with arguments', () => {
-      const { body } = testClient._buildRequestOptions('GET', { a: 1 }, null);
+      const { body } = testClient._buildRequestOptions('GET', { a: 1 }, undefined);
       expect(body).to.equal(undefined);
     });
 
     it('should provide a bearer Authorization header if a jwt is provided', () => {
       const jwt = "This is my JWT";
-      const { headers } = testClient._buildRequestOptions('GET', null, { jwt });
+      const { headers } = testClient._buildRequestOptions('GET', undefined, { jwt });
       expect(headers.authorization).to.equal('bearer This is my JWT');
     });
   });

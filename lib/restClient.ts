@@ -62,15 +62,15 @@ export type callResponse = any;
 
 export type genericApiRequest = {
   endpoint: endpointName,
-  args: callArgs,
-  context: callContext,
-  auth: callAuth,
+  args?: callArgs,
+  context?: callContext,
+  auth?: callAuth,
 };
 
 export type apiRequest = {
-  args: callArgs,
-  context: callContext,
-  auth: callAuth,
+  args?: callArgs,
+  context?: callContext,
+  auth?: callAuth,
 };
 export type callFunction = (call: apiRequest) => any;
 
@@ -145,7 +145,7 @@ class RestClient {
     return { path, method, transforms, handlers };
   }
 
-  _buildParameters(pathTemplate: endpointPath, args: callArgs) {
+  _buildParameters(pathTemplate: endpointPath, args?: callArgs) {
     let resolvedPath = pathTemplate;
     const remainingArgs = { ...args };
     const parameters = pathTemplate.match(/:[^/]+/g) || [];
@@ -174,7 +174,7 @@ class RestClient {
     return url;
   }
 
-  _buildRequestOptions(method: HTTPMethod, args: callArgs, auth: callAuth): requestOptions {
+  _buildRequestOptions(method: HTTPMethod, args?: callArgs, auth?: callAuth): requestOptions {
     const options: requestOptions = {
       method,
       mode: "cors",
@@ -191,7 +191,7 @@ class RestClient {
     return options;
   }
 
-  _buildRequest(endpoint: endpointName, args: callArgs, auth: callAuth): request {
+  _buildRequest(endpoint: endpointName, args?: callArgs, auth?: callAuth): request {
     const { path, method } = this._endpointDetails(endpoint);
     const { resolvedPath, remainingArgs } = this._buildParameters(path, args);
     const url = this._determineURL(method, resolvedPath, remainingArgs);
