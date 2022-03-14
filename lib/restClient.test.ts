@@ -4,7 +4,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { Response as FetchResponse } from 'node-fetch';
-import { RestClient, clientEndpoints, responseTransformFunctions, callResponse } from './restClient';
+import { RestClient, clientEndpoints, responseTransformFunctions, callResponse, callContext } from './restClient';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -337,7 +337,7 @@ describe('Rest Client', () => {
 
       it('should apply a transform with context', async () => {
         const response = generateResponse(200, { key: "value" });
-        const addFromContext = (res, con) => ({ ...res, ...con});
+        const addFromContext = (res: FetchResponse, con: callContext) => ({ ...res, ...con});
         const transforms = [addFromContext];
         const handlers = {};
         const context = { otherKey: "otherValue" };
@@ -463,9 +463,9 @@ describe('Rest Client', () => {
       });
 
       it('should pass the response body to the error handler', async() => {
-        const response = generateResponse(404, { message: "This is an expected result" });
+        const response = generateResponse(404, { body: "This is an expected result" });
         const transforms: responseTransformFunctions = [];
-        const handlers = { 404: (responseBody) => responseBody.message };
+        const handlers = { 404: (res: FetchResponse) => res.body };
         const result = await testClient._processResponse(response, transforms, handlers);
         expect(result).to.deep.equal("This is an expected result");
       });
@@ -473,7 +473,7 @@ describe('Rest Client', () => {
       it('should pass the response body to the error handler', async() => {
         const response = generateResponse(404, {});
         const transforms: responseTransformFunctions = [];
-        const handlers = { 404: (responseBody, context) => context.caller };
+        const handlers = { 404: (res: FetchResponse, context: callContext) => context.caller };
         const context = { caller: "Some user" };
         const result = await testClient._processResponse(response, transforms, handlers, context);
         expect(result).to.deep.equal("Some user");

@@ -19,9 +19,9 @@ type HTTPStatusCode = number;
 type privatePropertyName = `_${string}`;
 type transformName = privatePropertyName;
 type errorHandlerName = privatePropertyName;
-type callContext = Record<string, any>
+export type callContext = Record<string, any>
 
-type handlerFunction = (arg1: Response, arg2?: callContext) => any;
+type handlerFunction = ((arg1: Response, arg2: callContext) => any) | ((arg1: Response) => any);
 export type responseTransformFunctions = Array<handlerFunction>;
 type errorHandlerFunctions = Record<HTTPStatusCode, handlerFunction>;
 
