@@ -1,15 +1,7 @@
-import type nodeFetch from 'node-fetch';
-import type { Response } from 'node-fetch';
+import type { Response } from './fetchPolyfill';
+import _fetch from './fetchPolyfill';
 import { ClientError, ServerError } from './errors';
 import { isObject, objectMap } from './objectHelpers';
-
-let _fetch: typeof nodeFetch | typeof fetch;
-if (typeof(fetch) === "undefined") {
-  import('node-fetch').then(m => { _fetch = m as unknown as typeof nodeFetch; });
-} else {
-  // eslint-disable-next-line no-undef
-  _fetch = fetch;
-}
 
 type endpointNamePrefix = 'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'i'|'j'|'k'|'l'|'m'|'n'|'o'|'p'|'q'|'r'|'s'|'t'|'u'|'v'|'w'|'x'|'y'|'z';
 type endpointName = `${endpointNamePrefix}${string}`;
