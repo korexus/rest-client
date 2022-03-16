@@ -11,29 +11,30 @@ type HTTPStatusCode = number;
 type privatePropertyName = `_${string}`;
 type transformName = privatePropertyName;
 type errorHandlerName = privatePropertyName;
-export type callContext = Record<string, any>
 
-type handlerFunction = ((arg1: Response, arg2: callContext) => any) | ((arg1: Response) => any);
+
+export type callArgs = Record<string, any>;
+export type callAuth = Record<string, string>;
+export type callContext = Record<string, any>
+export type callResponse = any;
+
+export type handlerFunction = ((arg1: Response, arg2: callContext) => any) | ((arg1: Response) => any);
 export type responseTransformFunctions = Array<handlerFunction>;
-type errorHandlerFunctions = Record<HTTPStatusCode, handlerFunction>;
+export type errorHandlerFunctions = Record<HTTPStatusCode, handlerFunction>;
 
 type endpointDefinition = [
   endpointPath,
   HTTPMethod,
   Array<transformName>?,
   Record<HTTPStatusCode, errorHandlerName>?,
-]
+];
+
 type endpointDetails = {
   path: endpointPath,
   method: HTTPMethod,
   transforms: responseTransformFunctions,
   handlers: errorHandlerFunctions
 };
-
-export type clientEndpoints = Record<endpointName, endpointDefinition>;
-
-type callArgs = Record<string, any>;
-type callAuth = Record<string, string>;
 
 type requestOptions = {
   method: HTTPMethod,
@@ -50,7 +51,7 @@ type request = {
   options: requestOptions,
 }
 
-export type callResponse = any;
+export type clientEndpoints = Record<endpointName, endpointDefinition>;
 
 export type genericApiRequest = {
   endpoint: endpointName,
@@ -64,6 +65,7 @@ export type apiRequest = {
   context?: callContext,
   auth?: callAuth,
 };
+
 export type callFunction = (call: apiRequest) => any;
 
 
