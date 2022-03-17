@@ -71,15 +71,10 @@ export type callFunction = (call: apiRequest) => any;
 
 class RestClient {
   [index: endpointName]: callFunction | ((call: genericApiRequest) => any);
-
   [index: privatePropertyName]: any;
-
   _baseURL: string;
-
   _endpoints: clientEndpoints;
-
   static ClientError: typeof ClientError;
-
   static ServerError: typeof ServerError;
 
   constructor(baseURL: string, endpoints: clientEndpoints) {

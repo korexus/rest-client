@@ -27,6 +27,7 @@
     {
       "files": ["*.ts"],
       "rules": {
+        "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
         "no-useless-constructor": 0,
         "@typescript-eslint/no-explicit-any": 0,
         "@typescript-eslint/no-useless-constructor": ["error"]
