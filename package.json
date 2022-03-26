@@ -1,9 +1,9 @@
 {
   "name": "@korexus/rest-client",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "description": "A simple javascript REST client, used in several projects.",
   "main": "dist/restClient.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/restClient.d.ts",
   "scripts": {
     "prepublish": "tsc && npm test",
     "test:eslint": "DEBUG=eslint:cli-engine eslint lib",
