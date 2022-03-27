@@ -1,8 +1,9 @@
-import type { Response } from './fetchPolyfill';
+import { Response } from './fetchPolyfill';
 import _fetch from './fetchPolyfill';
 import { ClientError, ServerError } from './errors';
 import { isObject, objectMap } from './objectHelpers';
 
+export { Response } from './fetchPolyfill';
 type endpointNamePrefix = 'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'i'|'j'|'k'|'l'|'m'|'n'|'o'|'p'|'q'|'r'|'s'|'t'|'u'|'v'|'w'|'x'|'y'|'z';
 type endpointName = `${endpointNamePrefix}${string}`;
 type endpointPath = string;

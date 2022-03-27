@@ -3,8 +3,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { Response as FetchResponse } from 'node-fetch';
-import { RestClient, clientEndpoints, responseTransformFunctions, callResponse, callContext } from './restClient';
+import { RestClient, clientEndpoints, responseTransformFunctions, callResponse, callContext, Response as FetchResponse } from './restClient';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
