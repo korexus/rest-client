@@ -1,5 +1,4 @@
-import { Response } from './fetchPolyfill';
-import _fetch from './fetchPolyfill';
+import _fetch, { Response } from './fetchPolyfill';
 import { ClientError, ServerError } from './errors';
 import { isObject, objectMap } from './objectHelpers';
 
@@ -71,7 +70,7 @@ export type callFunction = (call: apiRequest) => any;
 
 
 class RestClient {
-  [index: endpointName]: callFunction | ((call: genericApiRequest) => any);
+  [index: endpointName]: callFunction | ((call: apiRequest) => any);
   [index: privatePropertyName]: any;
   _baseURL: string;
   _endpoints: clientEndpoints;
@@ -212,6 +211,7 @@ class RestClient {
     return transforms.reduce((res, t) => t(res, context), result);
   }
 
+  // @ts-expect-error call should not be a public function but that is a breaking change
   async call({ endpoint, args, context, auth = {} }: genericApiRequest) {
     const { url, options } = this._buildRequest(endpoint, args, auth);
     const response = await _fetch(url, options);
