@@ -1,6 +1,3 @@
-/* eslint max-classes-per-file: 0 */
-/* eslint lines-between-class-members: 0 */
-/* eslint-disable @typescript-eslint/no-empty-function */
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { RestClient, clientEndpoints, responseTransformFunctions, callResponse, callContext, Response as FetchResponse } from './restClient';

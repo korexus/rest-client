@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 const statusCodes = {
   // Client Errors
   400: "Bad Request",

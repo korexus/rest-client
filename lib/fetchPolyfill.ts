@@ -7,7 +7,6 @@ if (typeof fetch === "undefined") {
     import('node-fetch').then(({default: f}) => f(url, init))
   )) as unknown as typeof nodeFetch;
 } else {
-  // eslint-disable-next-line no-undef
   _fetch = fetch;
 }
 

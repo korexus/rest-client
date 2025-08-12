@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { expect } from 'chai';
 import { isObject, objectMap } from './objectHelpers';
 
